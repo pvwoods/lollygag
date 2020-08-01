@@ -51,6 +51,10 @@ class Task(Base):
     def readable_status(self):
         return Task._STATUS[self.status]
 
+    @property
+    def readable_due(self):
+        return self.due.strftime("%b %d %Y")
+
 
 
     # def __init__(self, title, due, description, priority, status, tags):

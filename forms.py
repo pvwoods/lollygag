@@ -2,6 +2,9 @@ import npyscreen
 from models import Task
 
 class TaskList(npyscreen.MultiLineAction):
+
+    row_format = u' {:5} | {:30.30} | {:10} | {:10} | {:10} | {:60}'
+
     def __init__(self, *args, **keywords):
         super(TaskList, self).__init__(*args, **keywords)
         self.add_handlers({
@@ -10,6 +13,11 @@ class TaskList(npyscreen.MultiLineAction):
         })
 
     def display_value(self, task):
+        return  self.row_format.format(
+            task.id, task.title, task.readable_due,
+            task.readable_priority, task.readable_status,
+            task.description
+        )
         return f'{task.title} [{task.readable_priority}] ({task.readable_status[0]})'
 
     def actionHighlighted(self, selected_task, keypress):
@@ -56,8 +64,8 @@ class TaskForm(npyscreen.ActionForm):
             self.title.value = self.task.title
             self.due.value = self.task.due
             self.description.value = self.task.description
-            self.priority = [0,]
-            self.status = [0,]
+            self.priority.value = [self.task.priority,]
+            self.status.value = [self.task.status,]
             self.tags.value = []
         else:
             self.title.value = ""
@@ -70,10 +78,10 @@ class TaskForm(npyscreen.ActionForm):
     def on_ok(self):
         descr = self.description.value if self.description.value != self._DESCRIPTION_DEFAULT_TEXT else ""
         if self.task and self.task.id:
-            self.task.title = self.title.value, 
-            self.task.due = self.due.value, 
-            self.task.description = descr, 
-            self.task.priority = self.priority.value[0],
+            self.task.title = self.title.value 
+            self.task.due = self.due.value 
+            self.task.description = descr 
+            self.task.priority = self.priority.value[0]
             self.task.status = self.status.value[0]
             self.task.save()
         else:
