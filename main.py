@@ -1,23 +1,13 @@
 import npyscreen
-from forms import NewTaskForm
+from forms import TaskForm, TaskListDisplay
 
-class TestApp(npyscreen.NPSApp):
-    def main(self):
-        # These lines create the form and populate it with widgets.
-        # A fairly complex screen in only 8 or so lines of code - a line for each control.
-        F  = NewTaskForm()
-
-        # This lets the user interact with the Form.
-        F.edit()
-
-        #print(ms.get_selected_objects())
-        #p = Project("my Project")
-        #p.save()
-
-
+class LollygagApplication(npyscreen.NPSAppManaged):
+    def onStart(self):
+        self.addForm("MAIN", TaskListDisplay)
+        self.addForm("EDIT_TASK_FORM", TaskForm)
 
 
 if __name__ == "__main__":
-    App = TestApp()
+    App = LollygagApplication()
     App.run()
 
