@@ -6,7 +6,11 @@ class MainForm(npyscreen.FormBaseNew):
 
     def create(self):
 
-        self.add_event_hander("event_complete_task_editing", self.did_complete_editing_task)
+        self.current_view = None
+
+        self.add_event_hander("event_complete_task_editing", self.did_complete_editing)
+        self.add_event_hander("event_complete_view_editing", self.did_complete_editing)
+        self.add_event_hander("event_selected_view", self.did_select_view)
 
         y, x = self.useable_space()
 
@@ -22,13 +26,26 @@ class MainForm(npyscreen.FormBaseNew):
         self.tasksBoxComponent = self.add(
             TasksBox, 
             name="Tasks",
-            footer = "Current View: All Tasks",
+            footer = "sort: [id desc], filters: []",
             value=0,
             rely=2, 
             relx=(x // 5) + 1,
         )
+        
+        self.update_views()
 
-    def did_complete_editing_task(self, event):
+    def did_complete_editing(self, event):
         self.parentApp.switchFormPrevious()
+        self.update_views()
+
+    def did_select_view(self, event):
+        #self.tasksBoxComponent.entry_widget.update_tasks(event.selected_view.get_tasks_for_view())
+        self.tasksBoxComponent.name = event.selected_view.title
+        #self.tasksBoxComponent.entry_widget.update_tasks(tasks)
+        #self.tasksBoxComponent.current_view = event.selected_view
+        #self.update_views()
+
+    def update_views(self):
         self.tasksBoxComponent.update_view()
+        self.viewsBoxComponent.update_view()
         

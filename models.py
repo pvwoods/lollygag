@@ -2,6 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import Column, Integer, String, DateTime, SmallInteger, Boolean
+from sqlalchemy.sql import text
 
 
 Base = declarative_base()
@@ -58,10 +59,25 @@ class Task(Base):
             return "no due date"
         return self.due.strftime("%b %d %Y")
 
-# class Project(Collection):
-#     def __init__(self, title):
-#         super().__init__(title)
+class View(Base):
+    __tablename__ = 'views'
 
-# class Tag(Collection):
-#     def __init__(self, title):
-#         super().__init__(title)
+    id = Column(Integer, primary_key=True)
+    title = Column(String)
+    query = Column(String)
+
+    def get_tasks_for_view(self):
+        return DB.session().query(Task).from_statement(text(self.query))
+    
+    def save(self):
+        s = DB.session()
+        s.add(self)
+        s.commit()
+    
+    def get_all():
+        return DB.session().query(View).all()
+
+    def delete(view):
+        s = DB.session()
+        s.delete(view)
+        s.commit()

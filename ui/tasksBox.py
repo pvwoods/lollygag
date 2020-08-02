@@ -8,9 +8,9 @@ class TaskBoxMultiLine(MultiLineAction):
     def __init__(self, *args, **keywords):
         super(TaskBoxMultiLine, self).__init__(*args, **keywords)
         self.add_handlers({
-            "^D": self.when_delete_record
+            "^X": self.when_delete_record,
+            "^S": self.change_sort_status,
         })
-        self.update_tasks()
     
     def display_value(self, task):
         return f'{task.title} ({task.readable_priority}) [{task.readable_status}]'
@@ -21,10 +21,13 @@ class TaskBoxMultiLine(MultiLineAction):
 
     def when_delete_record(self, *args, **keywords):
         Task.delete(self.values[self.cursor_line])
-        self.update_tasks()
+        self.parent.parentApp.queue_event(npyscreen.Event("event_update_view"))
 
-    def update_tasks(self):
-        self.values = Task.get_all()
+    def update_tasks(self, tasks):
+        self.values = tasks
+
+    def change_sort_status(self):
+        pass
 
 class TasksBox(npyscreen.BoxTitle):
 
@@ -35,10 +38,14 @@ class TasksBox(npyscreen.BoxTitle):
         self.add_handlers({
             "^A": self.when_add_record
         })
+        self.current_view = None
 
     def when_add_record(self, *args, **keywords):
         self.parent.parentApp.getForm('EDIT_TASK_FORM').task = None
         self.parent.parentApp.switchForm('EDIT_TASK_FORM')
     
     def update_view(self):
-        self.entry_widget.update_tasks()
+        if not self.current_view:
+            self.entry_widget.update_tasks(Task.get_all())
+        else:
+            self.entry_widget.update_tasks(self.current_view.get_tasks_for_view())
