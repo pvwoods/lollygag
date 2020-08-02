@@ -1,5 +1,6 @@
 import npyscreen
 from models import Task
+import curses
 
 class TaskEditForm(npyscreen.ActionFormV2):
 
@@ -10,7 +11,9 @@ class TaskEditForm(npyscreen.ActionFormV2):
         
         self.add_handlers({
             "^S": self.on_ok,
-            "^C": self.on_cancel
+            155: self.on_cancel,
+            curses.ascii.ESC: self.on_cancel,
+            "^W": self.on_cancel
         })
 
     def create(self):
@@ -47,8 +50,9 @@ class TaskEditForm(npyscreen.ActionFormV2):
     def on_ok(self, *args, **keywords):
         descr = self.description.value if self.description.value != self._DESCRIPTION_DEFAULT_TEXT else ""
         if self.task and self.task.id:
-            self.task.title = self.title.value 
-            self.task.due = self.due.value
+            self.task.title = self.title.value
+            if self.due.value:
+                self.task.due = self.due.value
             self.task.description = descr 
             self.task.priority = self.priority.value[0]
             self.task.status = self.status.value[0]
@@ -62,7 +66,8 @@ class TaskEditForm(npyscreen.ActionFormV2):
             if self.due.value:
                 t.due = self.due.value
             t.save()
-        self.parentApp.switchFormPrevious()
+        self.parentApp.queue_event(npyscreen.Event("event_complete_task_editing"))
+        
     
     def on_cancel(self, *args, **keywords):
         self.parentApp.switchFormPrevious()

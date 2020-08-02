@@ -5,6 +5,9 @@ from ui.viewsBox import ViewsBox
 class MainForm(npyscreen.FormBaseNew):
 
     def create(self):
+
+        self.add_event_hander("event_complete_task_editing", self.did_complete_editing_task)
+
         y, x = self.useable_space()
 
         self.viewsBoxComponent = self.add(
@@ -25,5 +28,7 @@ class MainForm(npyscreen.FormBaseNew):
             relx=(x // 5) + 1,
         )
 
-        self.tasksBoxComponent.update_task_view()
+    def did_complete_editing_task(self, event):
+        self.parentApp.switchFormPrevious()
+        self.tasksBoxComponent.update_view()
         

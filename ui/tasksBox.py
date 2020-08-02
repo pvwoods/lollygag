@@ -1,40 +1,44 @@
 import npyscreen
-from npyscreen.wgmultiline import MultiLine
+from npyscreen.wgmultiline import MultiLineAction
 from models import Task
 import curses
 
-class TaskBoxMultiLine(MultiLine):
+class TaskBoxMultiLine(MultiLineAction):
 
-    def actionHighlighted(self, act_on_this, key_press):
-        act_on_this += "XXXX"
-        self.parent.parentApp.getForm('EDIT_TASK_FORM').value = None
+    def __init__(self, *args, **keywords):
+        super(TaskBoxMultiLine, self).__init__(*args, **keywords)
+        self.add_handlers({
+            "^D": self.when_delete_record
+        })
+        self.update_tasks()
+    
+    def display_value(self, task):
+        return f'{task.title} ({task.readable_priority}) [{task.readable_status}]'
+
+    def actionHighlighted(self, selected_task, key_press):
+        self.parent.parentApp.getForm('EDIT_TASK_FORM').task = selected_task
         self.parent.parentApp.switchForm('EDIT_TASK_FORM')
+
+    def when_delete_record(self, *args, **keywords):
+        Task.delete(self.values[self.cursor_line])
+        self.update_tasks()
+
+    def update_tasks(self):
+        self.values = Task.get_all()
 
 class TasksBox(npyscreen.BoxTitle):
 
     _contained_widget = TaskBoxMultiLine
 
+    def __init__(self, *args, **keywords):
+        super(TasksBox, self).__init__(*args, **keywords)
+        self.add_handlers({
+            "^A": self.when_add_record
+        })
+
     def when_add_record(self, *args, **keywords):
-        self.parent.parentApp.getForm('EDIT_TASK_FORM').value = None
+        self.parent.parentApp.getForm('EDIT_TASK_FORM').task = None
         self.parent.parentApp.switchForm('EDIT_TASK_FORM')
-
-    def when_delete_record(self, *args, **keywords):
-        Task.delete(self.tasks[self.cursor_line])
-        self.update_task_view()
-
-    def actionHighlighted(self, act_on_this, key_press):
-        self.parent.parentApp.getForm('EDIT_TASK_FORM').value = self.tasks[self.entry_widget.cursor_line]
-        self.parent.parentApp.switchForm('EDIT_TASK_FORM')
-
-    def update_task_view(self):
-        
-        self.tasks = Task.get_all()
-
-        data = []
-        color_data = []
-        
-        for task in self.tasks:
-            row = f'{task.title} ({task.readable_priority}) [{task.readable_status}]'
-            data.append(row)
-
-        self.values = data 
+    
+    def update_view(self):
+        self.entry_widget.update_tasks()
