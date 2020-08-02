@@ -39,13 +39,12 @@ class MainForm(npyscreen.FormBaseNew):
         self.update_views()
 
     def did_select_view(self, event):
-        #self.tasksBoxComponent.entry_widget.update_tasks(event.selected_view.get_tasks_for_view())
-        self.tasksBoxComponent.name = event.selected_view.title
-        #self.tasksBoxComponent.entry_widget.update_tasks(tasks)
-        #self.tasksBoxComponent.current_view = event.selected_view
-        #self.update_views()
+        self.tasksBoxComponent.current_view = event.selected_view
+        self.update_views()
 
     def update_views(self):
         self.tasksBoxComponent.update_view()
+        self.tasksBoxComponent.display()
         self.viewsBoxComponent.update_view()
+        self.viewsBoxComponent.display()
         

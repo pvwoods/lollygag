@@ -46,6 +46,10 @@ class TasksBox(npyscreen.BoxTitle):
     
     def update_view(self):
         if not self.current_view:
+            self.name = "ALL"
+            self.footer = "select * from tasks"
             self.entry_widget.update_tasks(Task.get_all())
         else:
+            self.name = self.current_view.title
+            self.footer = self.current_view.cropped_query
             self.entry_widget.update_tasks(self.current_view.get_tasks_for_view())

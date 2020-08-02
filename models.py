@@ -67,7 +67,7 @@ class View(Base):
     query = Column(String)
 
     def get_tasks_for_view(self):
-        return DB.session().query(Task).from_statement(text(self.query))
+        return list(DB.session().query(Task).from_statement(text(self.query)))
     
     def save(self):
         s = DB.session()
@@ -81,3 +81,13 @@ class View(Base):
         s = DB.session()
         s.delete(view)
         s.commit()
+
+    @property
+    def cropped_query(self):
+        portions = self.query.lower().split("where")
+        if len(portions) == 2:
+            return portions[1]
+        elif len(self.query) > 50:
+            return self.query[:50] + "..."
+        else:
+            return self.query
