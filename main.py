@@ -1,5 +1,14 @@
+import signal
+import sys
+
 import npyscreen
 from forms import TaskForm, TaskListDisplay
+
+
+def ctrl_c_capture(sig, frame):
+    return
+
+signal.signal(signal.SIGINT, ctrl_c_capture)
 
 class LollygagApplication(npyscreen.NPSAppManaged):
     def onStart(self):

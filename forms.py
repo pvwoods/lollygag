@@ -1,3 +1,5 @@
+import datetime
+import sys
 import npyscreen
 from models import Task
 
@@ -9,7 +11,8 @@ class TaskList(npyscreen.MultiLineAction):
         super(TaskList, self).__init__(*args, **keywords)
         self.add_handlers({
             "^A": self.when_add_record,
-            "^D": self.when_delete_record
+            "^D": self.when_delete_record,
+            "^Q": self.when_quit
         })
 
     def display_value(self, task):
@@ -32,6 +35,9 @@ class TaskList(npyscreen.MultiLineAction):
         Task.delete(self.values[self.cursor_line])
         self.parent.update_list()
 
+    def when_quit(self, *args, **keywords):
+        sys.exit()
+
 class TaskListDisplay(npyscreen.FormMutt):
     MAIN_WIDGET_CLASS = TaskList
     def beforeEditing(self):
@@ -45,7 +51,16 @@ class TaskForm(npyscreen.ActionForm):
 
     _DESCRIPTION_DEFAULT_TEXT = """Additional Context"""
 
+    def __init__(self, *args, **keywords):
+        super(TaskForm, self).__init__(*args, **keywords)
+        
+        self.add_handlers({
+            "^S": self.on_ok,
+            "^C": self.on_cancel
+        })
+
     def create(self):
+
         self.task = None
         self.title  = self.add(npyscreen.TitleText, name = "Task:",)
         self.due = self.add(npyscreen.TitleDateCombo, name = "Due:")
@@ -75,26 +90,27 @@ class TaskForm(npyscreen.ActionForm):
             self.status.value = [0,]
             self.tags.value = []
     
-    def on_ok(self):
+    def on_ok(self, *args, **keywords):
         descr = self.description.value if self.description.value != self._DESCRIPTION_DEFAULT_TEXT else ""
         if self.task and self.task.id:
             self.task.title = self.title.value 
-            self.task.due = self.due.value 
+            self.task.due = self.due.value
             self.task.description = descr 
             self.task.priority = self.priority.value[0]
             self.task.status = self.status.value[0]
             self.task.save()
         else:
             t = Task(
-                title=self.title.value, 
-                due=self.due.value, 
+                title=self.title.value,
                 description=descr, 
                 priority=self.priority.value[0],
                 status=self.status.value[0])
+            if self.due.value:
+                t.due = self.due.value
             t.save()
         self.parentApp.switchFormPrevious()
     
-    def on_cancel(self):
+    def on_cancel(self, *args, **keywords):
         self.parentApp.switchFormPrevious()
     
     @property

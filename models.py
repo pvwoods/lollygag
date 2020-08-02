@@ -1,20 +1,21 @@
-import uuid
-import json
-import datetime
-
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import Column, Integer, String, DateTime, SmallInteger, Boolean
 
 
-engine = create_engine('sqlite:///dev.db')
-_SessionMaker = sessionmaker(bind=engine)
 Base = declarative_base()
 
-def session_maker():
-    Base.metadata.create_all(engine)
-    return _SessionMaker()
+class DB():
+    engine = create_engine('sqlite:///dev.db')
+    _SessionMaker = sessionmaker(bind=engine)
+    __ACTIVE_SESSION = None
+
+    def session():
+        if not DB.__ACTIVE_SESSION:
+            Base.metadata.create_all(DB.engine)
+            DB.__ACTIVE_SESSION = DB._SessionMaker()
+        return DB.__ACTIVE_SESSION
 
 class Task(Base):
 
@@ -31,15 +32,15 @@ class Task(Base):
     status = Column(Integer)
 
     def save(self):
-        s = session_maker()
+        s = DB.session()
         s.add(self)
         s.commit()
     
     def get_all():
-        return session_maker().query(Task).all()
+        return DB.session().query(Task).all()
 
     def delete(task):
-        s = session_maker()
+        s = DB.session()
         s.delete(task)
         s.commit()
 
@@ -53,23 +54,9 @@ class Task(Base):
 
     @property
     def readable_due(self):
+        if not self.due:
+            return "N/A"
         return self.due.strftime("%b %d %Y")
-
-
-
-    # def __init__(self, title, due, description, priority, status, tags):
-    #     self.title = title
-    #     self.due = due
-    #     self.description = description
-    #     if priority in Task._PRIORITIES:
-    #         self.priority = priority
-    #     else:
-    #         self.priority = Task._PRIORITIES[0]
-    #     if status in Task._STATUS:
-    #         self.status = status
-    #     else:
-    #         self.status = Task._STATUS[0]
-    #     self.tags = tags
 
 # class Collection(BaseObject):
 
