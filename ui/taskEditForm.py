@@ -1,67 +1,12 @@
-import datetime
-import sys
 import npyscreen
 from models import Task
 
-class TaskList(npyscreen.MultiLineAction):
-
-    row_format = u' {:5} | {:30.30} | {:10} | {:10} | {:10} | {:60}'
-
-    def __init__(self, *args, **keywords):
-        super(TaskList, self).__init__(*args, **keywords)
-        self.add_handlers({
-            "^A": self.when_add_record,
-            "^D": self.when_delete_record,
-            "^Q": self.when_quit
-        })
-
-    def display_value(self, task):
-        return  self.row_format.format(
-            task.id, task.title, task.readable_due,
-            task.readable_priority, task.readable_status,
-            task.description
-        )
-        return f'{task.title} [{task.readable_priority}] ({task.readable_status[0]})'
-
-    def actionHighlighted(self, selected_task, keypress):
-        self.parent.parentApp.getForm('EDIT_TASK_FORM').task = selected_task
-        self.parent.parentApp.switchForm('EDIT_TASK_FORM')
-
-    def when_add_record(self, *args, **keywords):
-        self.parent.parentApp.getForm('EDIT_TASK_FORM').value = None
-        self.parent.parentApp.switchForm('EDIT_TASK_FORM')
-
-    def when_delete_record(self, *args, **keywords):
-        Task.delete(self.values[self.cursor_line])
-        self.parent.update_list()
-
-    def when_quit(self, *args, **keywords):
-        sys.exit(0)
-
-class TaskListDisplay(npyscreen.FormMutt):
-    MAIN_WIDGET_CLASS = TaskList
-    def beforeEditing(self):
-        self.update_list()
-
-    def update_list(self):
-        self.wMain.values = Task.get_all()
-        self.wMain.display()
-
-class MainForm(npyscreen.FormBaseNew):
-    def create(self):
-        y, x = self.useable_space()
-        obj = self.add(npyscreen.BoxTitle, name="BoxTitle",
-              custom_highlighting=True, values=["first line", "second line"],
-              rely=y // 4, max_width=x // 2 - 5, max_height=y // 2)
-        self.add(TaskListDisplay, name="Boxed MultiLineEdit", footer="footer",
-              relx=x // 2, rely=2)
-
-class TaskForm(npyscreen.ActionForm):
+class TaskEditForm(npyscreen.ActionFormV2):
 
     _DESCRIPTION_DEFAULT_TEXT = """Additional Context"""
 
     def __init__(self, *args, **keywords):
-        super(TaskForm, self).__init__(*args, **keywords)
+        super(TaskEditForm, self).__init__(*args, **keywords)
         
         self.add_handlers({
             "^S": self.on_ok,
@@ -94,7 +39,7 @@ class TaskForm(npyscreen.ActionForm):
         else:
             self.title.value = ""
             self.due.value = None
-            self.description.value = TaskForm._DESCRIPTION_DEFAULT_TEXT
+            self.description.value = TaskEditForm._DESCRIPTION_DEFAULT_TEXT
             self.priority.value = [0,]
             self.status.value = [0,]
             self.tags.value = []

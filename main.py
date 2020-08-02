@@ -2,19 +2,19 @@ import signal
 import sys
 
 import npyscreen
-from forms import TaskForm, TaskListDisplay
+from ui.mainForm import MainForm
+from ui.taskEditForm import TaskEditForm
 
 
-def ctrl_c_capture(sig, frame):
-    return
+# def ctrl_c_capture(sig, frame):
+#     return
 
-signal.signal(signal.SIGINT, ctrl_c_capture)
+# signal.signal(signal.SIGINT, ctrl_c_capture)
 
-class LollygagApplication(npyscreen.NPSAppManaged):
+class LollygagApplication(npyscreen.StandardApp):
     def onStart(self):
-        npyscreen.setTheme(npyscreen.Themes.ElegantTheme)
-        self.addForm("MAIN", TaskListDisplay)
-        self.addForm("EDIT_TASK_FORM", TaskForm)
+        self.addForm("MAIN", MainForm, name="My Tasks")
+        self.addForm("EDIT_TASK_FORM", TaskEditForm, name="Create Task")
 
 
 if __name__ == "__main__":

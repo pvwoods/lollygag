@@ -55,29 +55,8 @@ class Task(Base):
     @property
     def readable_due(self):
         if not self.due:
-            return "N/A"
+            return "no due date"
         return self.due.strftime("%b %d %Y")
-
-# class Collection(BaseObject):
-
-#     def create_table_structure(db):
-#         c = db.cursor()
-#         c.execute(
-#         f'CREATE TABLE IF NOT EXISTS ${type(self).__name__}\
-#             ( _record_id INTEGER PRIMARY KEY, \
-#               title     TEXT, \
-#               due   TEXT, \
-#               description   TEXT, \
-#               priority   TEXT, \
-#               description TEXT \
-#               )' \
-#             )
-#         db.commit()
-#         c.close()
-
-#     def __init__(self, title):
-#         self.title = title
-#         self.tasks = [] # list of UUID references to tasks
 
 # class Project(Collection):
 #     def __init__(self, title):
