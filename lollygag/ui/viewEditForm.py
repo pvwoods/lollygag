@@ -1,5 +1,5 @@
 import npyscreen
-from data.models import View
+from lollygag.data.models import View
 import curses
 
 class ViewEditForm(npyscreen.ActionFormV2):

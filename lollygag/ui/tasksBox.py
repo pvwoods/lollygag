@@ -1,6 +1,6 @@
 import npyscreen
 from npyscreen.wgmultiline import MultiLineAction
-from data.models import Task
+from lollygag.data.models import Task
 import curses
 
 class TaskBoxMultiLine(MultiLineAction):

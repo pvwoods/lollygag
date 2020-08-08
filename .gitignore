@@ -1,4 +1,6 @@
 scratchpad/
 venv/
 __pycache__/
-dev.db
+build/
+*.egg-info
+dist/

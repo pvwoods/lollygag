@@ -28,7 +28,7 @@ setuptools.setup(
     ],
     entry_points={
         'console_scripts': [
-            'lollygag=lollygag.__main__:main'
+            'lollygag=__main__:main'
         ]
     },
 )

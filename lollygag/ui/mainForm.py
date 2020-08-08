@@ -1,6 +1,6 @@
 import npyscreen
-from ui.tasksBox import TasksBox
-from ui.viewsBox import ViewsBox
+from lollygag.ui.tasksBox import TasksBox
+from lollygag.ui.viewsBox import ViewsBox
 
 class MainForm(npyscreen.FormBaseNew):
 

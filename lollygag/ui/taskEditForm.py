@@ -1,5 +1,5 @@
 import npyscreen
-from data.models import Task
+from lollygag.data.models import Task
 import curses
 
 class TaskEditForm(npyscreen.ActionFormV2):
