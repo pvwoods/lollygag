@@ -1,5 +1,5 @@
 import npyscreen
-from models import Task
+from data.models import Task
 import curses
 
 class TaskEditForm(npyscreen.ActionFormV2):

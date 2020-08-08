@@ -1,6 +1,6 @@
 import npyscreen
 from npyscreen.wgmultiline import MultiLineAction
-from models import Task
+from data.models import Task
 import curses
 
 class TaskBoxMultiLine(MultiLineAction):

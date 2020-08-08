@@ -1,6 +1,6 @@
 import npyscreen
 from npyscreen.wgmultiline import MultiLineAction
-from models import View
+from data.models import View
 
 class ViewBoxMultiLine(MultiLineAction):
 
