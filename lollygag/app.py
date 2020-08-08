@@ -1,4 +1,4 @@
-import npyscreen
+import lollygag.vendor.npyscreen as npyscreen
 
 from lollygag.ui.mainForm import MainForm
 from lollygag.ui.taskEditForm import TaskEditForm

@@ -1,5 +1,5 @@
-import npyscreen
-from npyscreen.wgmultiline import MultiLineAction
+import lollygag.vendor.npyscreen as npyscreen
+from lollygag.vendor.npyscreen.wgmultiline import MultiLineAction
 from lollygag.data.models import View
 
 class ViewBoxMultiLine(MultiLineAction):
