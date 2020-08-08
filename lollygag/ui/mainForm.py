@@ -1,4 +1,4 @@
-import lollygag.vendor.npyscreen as npyscreen
+from lollygag.vendor import npyscreen
 from lollygag.ui.tasksBox import TasksBox
 from lollygag.ui.viewsBox import ViewsBox
 

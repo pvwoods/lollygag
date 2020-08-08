@@ -1,5 +1,5 @@
-import lollygag.vendor.npyscreen as npyscreen
-from npyscreen.wgmultiline import MultiLineAction
+from lollygag.vendor import npyscreen
+from lollygag.vendor.npyscreen.wgmultiline import MultiLineAction
 from lollygag.data.models import Task
 import curses
 

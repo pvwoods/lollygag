@@ -1,4 +1,4 @@
-import lollygag.vendor.npyscreen as npyscreen
+from lollygag.vendor import npyscreen
 from lollygag.data.models import View
 import curses
 
