@@ -29,7 +29,7 @@ class TaskEditForm(npyscreen.ActionFormV2):
         self.status = self.add(npyscreen.TitleSelectOne, max_height=4, value = [0,], name="Status: ",
                 values = Task._STATUS, scroll_exit=True)
         self.tags = self.add(npyscreen.TitleMultiSelect, max_height =-2, value = [], name="Tags: ",
-                values = ["#help","#done","#needs"], scroll_exit=True)
+                values = [], scroll_exit=True)
 
     def beforeEditing(self):
         if self.task:

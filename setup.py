@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     ld = fh.read()
 
 setuptools.setup(
-    name="lollygag",
+    name="lollygag-cli",
     version="0.0.1",
     author="Philip Woods",
     description="a flexible task manager",
